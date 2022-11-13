@@ -1,5 +1,5 @@
 {
-    "name" : "若依权限管理系统",
+    "name" : "约个不咕球",
     "appid" : "__UNI__3D0DC28",
     "description" : "",
     "versionName" : "1.0.1",
@@ -50,9 +50,10 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "",
+        "appid" : "wxfad76bfdddd42001",
         "setting" : {
-            "urlCheck" : false
+            "urlCheck" : false,
+            "es6" : true
         },
         "usingComponents" : true
     },

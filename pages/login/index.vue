@@ -7,109 +7,80 @@
 		<!-- 标题 -->
 		<view class="t-b">{{ title }}</view>
 		<view class="t-b2">{{ subTitle }}</view>
-		<form class="cl">
-			<!-- 登录账号 -->
-			<view class="login-form-item">
-				<u-input v-model="username" placeholder="请输入登录用户名" maxlength="30">
-					<u-icon slot="prefix" name="account" size="35px"></u-icon>
-				</u-input>
-			</view>
-			<!-- 登录密码 -->
-			<view class="login-form-item">
-				<u-input v-model="password" type="password" placeholder="请输入登录密码" maxlength="16">
-					<u-icon slot="prefix" name="lock" size="35px"></u-icon>
-				</u-input>
-			</view>
-			<!-- 图形验证码 -->
-			<view class="login-form-item t-captcha">
-				<u-input v-model="captchaCode" type="number" placeholder="请输入验证码" maxlength="4">
-					<u-icon slot="prefix" name="fingerprint" size="35px"></u-icon>
-				</u-input>
-				<image :src="captcha" @click="getCaptcha" class="t-captcha-img"></image>
-			</view>
-			<button @tap="login()">登 录</button>
-		</form>
+
+		<button class="cu-btn block bg-green margin-tb-sm lg shadow" @click="getUserInfo">
+			微信一键登录
+		</button>
+
 	</view>
 </template>
 <script>
-import * as CaptchaApi from '@/api/captcha'
-import { isEmpty } from '@/utils/verify.js'
+	import {
+		isEmpty
+	} from '@/utils/verify.js'
 
-export default {
-	data() {
-		return {
-			title: '若依权限管理系统',
-			subTitle: '欢迎回来，开始工作吧！',
-			// 图形验证码信息
-			captcha: null,
-			// 登录账号
-			username: 'admin',
-			// 密码
-			password: 'admin123',
-			// 图形验证码
-			captchaCode: '',
-			uuid: ''
-		};
-	},
-	created() {
-	  // 获取图形验证码
-	  this.getCaptcha()
-	},
-	methods: {
-		// 获取图形验证码
-		getCaptcha() {
-			const app = this
-			CaptchaApi.image().then(result => {
-				app.captcha = 'data:image/gif;base64,' + result.img
-				app.uuid = result.uuid
-			})
+	export default {
+		data() {
+			return {
+				title: '约个不咕的球',
+				subTitle: '欢迎使用，开始约球吧！',
+
+				uuid: ''
+			};
 		},
-		// 验证表单内容
-		validItem() {
-			const app = this
-			if (isEmpty(app.username)) {
-				uni.$u.toast('请输入登录用户名')
-				return false
-			}
-			if (isEmpty(app.password)) {
-				uni.$u.toast('请输入登录密码')
-				return false
-			}
-			if (isEmpty(app.captchaCode)) {
-				uni.$u.toast('请输入验证码')
-				return false
-			}
-			return true
+		created() {
+        if()
 		},
-		// 确认登录
-		login() {
-      const app = this
-			let valid = app.validItem();
-			if (valid) {
-				app.isLoading = true
-				app.$store.dispatch('Login', {
-				  username: app.username,
-				  password: app.password,
-				  code: app.captchaCode,
-				  uuid: app.uuid
-				}).then(result => {
-					uni.switchTab({
-						url: '/pages/index/index',
-						fail(err) {
-							console.log(err)
-						}
-					})
-				})
-				.catch(err => {
-					app.captchaCode = ''
-					app.getCaptcha()
-				})
-				.finally(() => app.isLoading = false)
+		methods: {
+
+			// 10.67.154.106
+			getUserInfo() {
+				uni.getUserProfile({
+					lang: 'zh_CN',
+					desc: '登录',
+					success: details => {
+						this.userInfo = details.userInfo; //用户信息，微信头像，昵称等等
+						// 将用户授权信息存储到本地
+						wx.setStorageSync('userinfo', details.userInfo)
+						uni.login({
+							success(res) {
+								uni.request({
+									url: 'http://10.67.154.106:3000/login',
+									data: {
+										code: res.code
+									},
+									header: {
+										'content-type': 'application/json'
+									},
+
+									method: 'POST',
+
+									success(res) {
+										
+										// 将后端返回的token存储到本地
+									wx.setStorageSync('token', res)
+										console.log(res, '后台数据')
+									}
+								})
+								console.log(details)
+								console.log(res.code) //获取到的code
+							}
+						})
+					},
+					fail(res) {
+						uni.showToast({
+							title: '登录授权失败',
+							icon: 'none',
+						})
+					}
+				});
 			}
-		},
-	}
-};
+
+		}
+
+		
+	};
 </script>
 <style lang="scss" scoped>
-@import 'index.scss';
+	@import 'index.scss';
 </style>

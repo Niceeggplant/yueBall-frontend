@@ -5,17 +5,8 @@
 	color: #000;
 }
 
-/deep/ .login-form-item .u-input {
-  padding: 0 10px 0 62px;
-	height: 32px;
-	line-height: 32px;
-	margin-bottom: 26px;
-	background: #f8f7fc;
-	border: 1px solid #e9e9e9;
-	font-size: 14px;
-	border-radius: 26px;
-}
 
+ 
 .t-captcha {
 	display: flex;
   flex-wrap: wrap;
@@ -54,7 +45,7 @@
 .t-login .t-b {
 	text-align: left;
 	font-size: 56rpx;
-	color: #000;
+	color: #5677fc;
 	padding: 300rpx 0 20rpx 0;
 	font-weight: bold;
 }
@@ -67,4 +58,11 @@
 
 .t-login .uni-input-placeholder {
 	color: #000 !important;
+}
+
+.img-c{
+	height:180px;
+	width: 200px;
+	
+	    position: absolute;
 }
